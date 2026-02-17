@@ -1,10 +1,11 @@
-import { app } from './lib/agent';
+import { serve } from '@hono/node-server';
+import { app } from './lib/agent.js';
 
-const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+const port = Number(process.env.PORT ?? 3000);
 
-console.log(`Starting agent server on port ${port}...`);
+console.log(`Starting x402 payment compatibility copilot on port ${port}...`);
 
-export default {
-  port,
+serve({
   fetch: app.fetch,
-};
+  port,
+});

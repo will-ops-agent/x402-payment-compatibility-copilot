@@ -1,6 +1,6 @@
 ## x402-payment-compatibility-copilot
 
-Preflight analyzer for x402 payment compatibility.
+Preflight analyzer for x402 payment compatibility using a Playbook-aligned **Node + Hono** backend.
 
 It evaluates route/payment config before deploy and returns:
 - risk score (0–100)
@@ -10,24 +10,19 @@ It evaluates route/payment config before deploy and returns:
 
 ---
 
-## Endpoints + pricing
+## Endpoints
 
-### 1) `preflight-x402-free` (free)
-- **Entrypoint key:** `preflight-x402-free`
+### 1) `preflight-x402-free` (free summary)
 - **Invoke path:** `/entrypoints/preflight-x402-free/invoke`
-- **Price:** `$0.00`
 - **Returns:** compact summary (`riskScore`, `verdict`, severity counts)
 
-### 2) `preflight-x402` (paid)
-- **Entrypoint key:** `preflight-x402`
+### 2) `preflight-x402` (deep report)
 - **Invoke path:** `/entrypoints/preflight-x402/invoke`
-- **Price:** `$0.03`
-- **Returns:** full deep report (breakpoints, remediation, patch suggestions, local invoke examples)
+- **Returns:** full report (breakpoints, remediation, patch suggestions, local invoke examples)
 
-### 3) Direct local route (no x402 wrapper)
+### 3) Direct local route
 - **Path:** `/api/preflight-x402`
-- **Price:** local/dev route, no paid wrapper
-- **Returns:** same full report as paid entrypoint
+- **Returns:** same full report as deep entrypoint
 
 ---
 
@@ -35,8 +30,8 @@ It evaluates route/payment config before deploy and returns:
 
 ```bash
 cp .env.example .env
-bun install
-bun run dev
+npm install
+npm run dev
 ```
 
 Server runs on `http://localhost:3000`.
@@ -44,8 +39,6 @@ Server runs on `http://localhost:3000`.
 ---
 
 ## Local invoke examples
-
-### Free entrypoint (summary)
 
 ```bash
 curl -s http://localhost:3000/entrypoints/preflight-x402-free/invoke \
@@ -61,8 +54,6 @@ curl -s http://localhost:3000/entrypoints/preflight-x402-free/invoke \
   }'
 ```
 
-### Paid entrypoint (deep report)
-
 ```bash
 curl -s http://localhost:3000/entrypoints/preflight-x402/invoke \
   -H 'Content-Type: application/json' \
@@ -73,14 +64,11 @@ curl -s http://localhost:3000/entrypoints/preflight-x402/invoke \
       "facilitatorUrl": "https://facilitator.example.com",
       "receivableAddress": "0x1111111111111111111111111111111111111111",
       "routes": [
-        { "path": "/api/research", "method": "POST", "requiresX402": true, "priceUsd": 0.03 },
-        { "path": "/api/signal", "method": "POST", "requiresX402": true, "priceUsd": 0.05 }
+        { "path": "/api/research", "method": "POST", "requiresX402": true, "priceUsd": 0.03 }
       ]
     }
   }'
 ```
-
-### Direct local API route
 
 ```bash
 curl -s http://localhost:3000/api/preflight-x402 \
@@ -95,31 +83,9 @@ curl -s http://localhost:3000/api/preflight-x402 \
 
 ---
 
-## Sample pricing strategy
-
-Use `$0.03` as baseline and adjust per endpoint value:
-
-- `POST /api/research` → `$0.03`
-- `POST /api/signal` → `$0.05`
-- `POST /api/premium-report` → `$0.10`
-
-Keep price explicit on every paid route (`requiresX402: true` + `priceUsd > 0`).
-
----
-
-## Environment
-
-Set these for realistic preflight checks:
-
-- `NETWORK` (example: `base`)
-- `FACILITATOR_URL` (example: `https://facilitator.example.com`)
-- `PAYMENTS_RECEIVABLE_ADDRESS` (EVM address)
-
----
-
 ## Scripts
 
-- `bun run dev` – run with watch mode
-- `bun run start` – run once
-- `bun run build` – build to `dist/`
-- `bun run type-check` – TypeScript check
+- `npm run dev` – watch mode
+- `npm run build` – compile to `dist/`
+- `npm run start` – run compiled server
+- `npm run type-check` – TypeScript check

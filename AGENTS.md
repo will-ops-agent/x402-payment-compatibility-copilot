@@ -1,30 +1,33 @@
-# AGENTS.md
+# x402-payment-compatibility-copilot
 
-## Project
-`x402-payment-compatibility-copilot` is a Bun + TypeScript service that analyzes x402 payment-route compatibility.
+## Backend Stack
 
-## Runtime
-- HTTP framework: `hono`
-- Validation: `zod`
-- Package manager/runtime: `bun`
+This service uses the active Playbook-aligned backend stack:
+- Node.js + TypeScript
+- Hono (`hono`, `@hono/node-server`)
+- Zod for request validation
 
-## Commands
-```bash
-bun install
-bun run dev
-bun run start
-bun run type-check
-bun run build
-bun run register
-bun run verify-registry
-```
+Service implementation follows the active Playbook backend stack only.
 
-## API routes
+## Service Endpoints
+
+- `GET /health`
 - `POST /entrypoints/preflight-x402-free/invoke`
 - `POST /entrypoints/preflight-x402/invoke`
 - `POST /api/preflight-x402`
-- `GET /health`
 
-## Notes
-- Keep project logic focused on x402 preflight analysis.
-- Do not introduce Daydreams/Lucid-specific packages or conventions.
+## Local Development
+
+```bash
+npm install
+npm run dev
+```
+
+## Validation Checklist
+
+```bash
+npm run type-check
+npm run build
+npm run start
+# then curl /health and preflight endpoints
+```
