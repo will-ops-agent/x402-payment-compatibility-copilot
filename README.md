@@ -2,6 +2,8 @@
 
 Preflight analyzer for x402 payment compatibility using a Playbook-aligned **Node + Hono** backend.
 
+Migration status: backend references to Lucid/Daydreams removed.
+
 It evaluates route/payment config before deploy and returns:
 - risk score (0–100)
 - prioritized breakpoints
